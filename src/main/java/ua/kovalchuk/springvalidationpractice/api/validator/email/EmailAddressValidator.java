@@ -1,4 +1,4 @@
-package ua.kovalchuk.springvalidationpractice.api.validator;
+package ua.kovalchuk.springvalidationpractice.api.validator.email;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import static org.apache.logging.log4j.util.Strings.isNotEmpty;
 
 // todo
-//  can be DB validator or complex validation
+//  can be DB validator or complex validation like regex
 public class EmailAddressValidator implements ConstraintValidator<ValidEmailAddress, String> {
 
     private static final String EMAIL_ADDRESS_REGEX = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";

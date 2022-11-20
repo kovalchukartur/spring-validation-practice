@@ -1,4 +1,4 @@
-package ua.kovalchuk.springvalidationpractice.api.validator;
+package ua.kovalchuk.springvalidationpractice.api.validator.email;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

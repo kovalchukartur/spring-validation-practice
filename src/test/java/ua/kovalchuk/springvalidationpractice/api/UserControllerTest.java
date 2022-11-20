@@ -23,21 +23,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+// https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
 class UserControllerTest {
 
     private final UserController userController = new UserController();
-
-    // https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
-    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
-            this.userController
-        )
-        .setControllerAdvice(
-            new PathVariableMethodArgumentResolver()
-        )
-        .setHandlerExceptionResolvers(
-            new DefaultHandlerExceptionResolver(),
-            new ExceptionHandlerExceptionResolver()
-        )
+    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(userController)
+        .setHandlerExceptionResolvers(new DefaultHandlerExceptionResolver())
         .build();
 
     @Test

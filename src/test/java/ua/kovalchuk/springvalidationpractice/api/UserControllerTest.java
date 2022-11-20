@@ -37,9 +37,7 @@ class UserControllerTest {
         )
         .setHandlerExceptionResolvers(
             new DefaultHandlerExceptionResolver(),
-            new ResponseStatusExceptionResolver(),
-            new ExceptionHandlerExceptionResolver(),
-            new DefaultErrorAttributes()
+            new ExceptionHandlerExceptionResolver()
         )
         .build();
 

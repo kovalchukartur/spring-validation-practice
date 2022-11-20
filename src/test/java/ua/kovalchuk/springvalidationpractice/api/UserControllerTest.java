@@ -1,29 +1,47 @@
 package ua.kovalchuk.springvalidationpractice.api;
 
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import org.springframework.boot.autoconfigure.web.servlet.error.DefaultErrorViewResolver;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver;
+import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 import ua.kovalchuk.springvalidationpractice.api.error.MethodArgumentNotValidExceptionHandler;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(
-//    classes = {
-//        MethodArgumentNotValidExceptionHandler.class,
-//        UserController.class
-//    }
-)
-@AutoConfigureMockMvc
 class UserControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+    private final UserController userController = new UserController();
+
+    // https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc
+    private final MockMvc mockMvc = MockMvcBuilders.standaloneSetup(
+            this.userController
+        )
+        .setControllerAdvice(
+            new MethodArgumentNotValidExceptionHandler(),
+            new PathVariableMethodArgumentResolver()
+        )
+        .setHandlerExceptionResolvers(
+            new DefaultHandlerExceptionResolver(),
+            new ResponseStatusExceptionResolver(),
+            new ExceptionHandlerExceptionResolver(),
+            new DefaultErrorAttributes()
+        )
+        .build();
 
     @Test
     void whenGetUserByIdIsSuccess() throws Exception {
@@ -37,11 +55,13 @@ class UserControllerTest {
 
     @Test
     void throwExceptionWhenGetUserByIdAndInvalidId() throws Exception {
-        mockMvc.perform(get("/users/test/search"))
+        Exception exception = mockMvc.perform(get("/users/test/search"))
             .andDo(print())
             .andExpect(status().isBadRequest())
-            .andExpect(
-                content().string(containsString("1235"))
-            );
+            .andReturn()
+            .getResolvedException();
+
+        assertNotNull(exception);
+        assertEquals(MethodArgumentTypeMismatchException.class, exception.getClass());
     }
 }

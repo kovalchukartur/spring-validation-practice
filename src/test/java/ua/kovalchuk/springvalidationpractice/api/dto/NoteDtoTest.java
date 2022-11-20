@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class NoteDtoTest {
 
-    public static final String NAME_PATH = "name";
-    public static final String DESC_PATH = "desc";
-    public static final String VALID_VALUE = "desc_value";
+    private static final String NAME_PATH = "name";
+    private static final String DESC_PATH = "desc";
+    private static final String VALID_VALUE = "desc_value";
     private Validator validator;
 
     public static Stream<Arguments> provideStringsForIsBlank() {

@@ -32,7 +32,6 @@ class UserControllerTest {
             this.userController
         )
         .setControllerAdvice(
-            new MethodArgumentNotValidExceptionHandler(),
             new PathVariableMethodArgumentResolver()
         )
         .setHandlerExceptionResolvers(

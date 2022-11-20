@@ -1,4 +1,4 @@
-package ua.kovalchuk.springvalidationpractice.api.dto;
+package ua.kovalchuk.springvalidationpractice.api.error;
 
 import java.util.List;
 import org.springframework.core.Ordered;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import ua.kovalchuk.springvalidationpractice.api.error.ApiError;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
@@ -29,7 +28,7 @@ public class MethodArgumentNotValidExceptionHandler {
 
     private ApiError processFieldErrors(List<FieldError> fieldErrors) {
         ApiError apiError = new ApiError(BAD_REQUEST.value(), "Validation apiError");
-        for (FieldError fieldError: fieldErrors) {
+        for (FieldError fieldError : fieldErrors) {
             apiError.addFieldError(fieldError);
         }
         return apiError;

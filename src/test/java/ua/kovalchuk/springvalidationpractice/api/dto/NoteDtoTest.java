@@ -7,6 +7,7 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -14,6 +15,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NoteDtoTest {
 
@@ -52,6 +54,15 @@ class NoteDtoTest {
         ConstraintViolation<NoteDto> constraintViolation = constraintViolations.iterator().next();
         assertEquals("must not be blank", constraintViolation.getMessage());
         assertEquals(propertyPath, constraintViolation.getPropertyPath().toString());
+    }
+
+    @Test
+    void whenValidateNoteDtoIsSuccess() {
+        NoteDto noteDto = buildNoteDto("test", "test");
+        Set<ConstraintViolation<NoteDto>> constraintViolations = validator.validate(noteDto);
+
+        assertNotNull(constraintViolations);
+        assertTrue(constraintViolations.isEmpty());
     }
 
     private NoteDto buildNoteDto(String name, String desc) {

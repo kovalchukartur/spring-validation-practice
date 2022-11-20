@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import ua.kovalchuk.springvalidationpractice.api.validator.ValidEmailAddress;
 
 @Getter
 @Builder
@@ -18,4 +19,6 @@ public class NoteDto {
     private String name;
     @NotBlank
     private String desc;
+    @ValidEmailAddress
+    private String email;
 }

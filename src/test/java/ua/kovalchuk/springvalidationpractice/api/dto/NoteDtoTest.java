@@ -19,19 +19,23 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class NoteDtoTest {
 
+    public static final String MAIL_ADDRESS = "mail@gmail.com";
+    public static final String EXPECTED_MESSAGE = "must not be blank";
     private static final String NAME_PATH = "name";
     private static final String DESC_PATH = "desc";
+    private static final String EMAIL_PATH = "email";
     private static final String VALID_VALUE = "desc_value";
     private Validator validator;
 
     public static Stream<Arguments> provideStringsForIsBlank() {
         return Stream.of(
-            Arguments.of(null, VALID_VALUE, NAME_PATH),
-            Arguments.of("", VALID_VALUE, NAME_PATH),
-            Arguments.of("  ", VALID_VALUE, NAME_PATH),
-            Arguments.of(VALID_VALUE, null, DESC_PATH),
-            Arguments.of(VALID_VALUE, "  ", DESC_PATH),
-            Arguments.of(VALID_VALUE, "  ", DESC_PATH)
+            Arguments.of(null, VALID_VALUE, MAIL_ADDRESS, NAME_PATH, EXPECTED_MESSAGE),
+            Arguments.of("", VALID_VALUE, MAIL_ADDRESS, NAME_PATH, EXPECTED_MESSAGE),
+            Arguments.of("  ", VALID_VALUE, MAIL_ADDRESS, NAME_PATH, EXPECTED_MESSAGE),
+            Arguments.of(VALID_VALUE, null, MAIL_ADDRESS, DESC_PATH, EXPECTED_MESSAGE),
+            Arguments.of(VALID_VALUE, "  ", MAIL_ADDRESS, DESC_PATH, EXPECTED_MESSAGE),
+            Arguments.of(VALID_VALUE, "  ", MAIL_ADDRESS, DESC_PATH, EXPECTED_MESSAGE),
+            Arguments.of(VALID_VALUE, VALID_VALUE, "invalidMailAddress", EMAIL_PATH, "Email address is not recognized")
         );
     }
 
@@ -44,31 +48,32 @@ class NoteDtoTest {
 
     @ParameterizedTest
     @MethodSource("provideStringsForIsBlank")
-    void returnErrorWhenValidateNoteDto(String nameValue, String descValue, String propertyPath) {
-        NoteDto noteDto = buildNoteDto(nameValue, descValue);
+    void returnErrorWhenValidateNoteDto(String nameValue, String descValue, String email, String propertyPath, String expectedMessage) {
+        NoteDto noteDto = buildNoteDto(nameValue, descValue, email);
         Set<ConstraintViolation<NoteDto>> constraintViolations = validator.validate(noteDto);
 
         assertNotNull(constraintViolations);
         assertFalse(constraintViolations.isEmpty());
         assertEquals(1, constraintViolations.size());
         ConstraintViolation<NoteDto> constraintViolation = constraintViolations.iterator().next();
-        assertEquals("must not be blank", constraintViolation.getMessage());
+        assertEquals(expectedMessage, constraintViolation.getMessage());
         assertEquals(propertyPath, constraintViolation.getPropertyPath().toString());
     }
 
     @Test
     void whenValidateNoteDtoIsSuccess() {
-        NoteDto noteDto = buildNoteDto("test", "test");
+        NoteDto noteDto = buildNoteDto("name", "desc", "Test@email.com");
         Set<ConstraintViolation<NoteDto>> constraintViolations = validator.validate(noteDto);
 
         assertNotNull(constraintViolations);
         assertTrue(constraintViolations.isEmpty());
     }
 
-    private NoteDto buildNoteDto(String name, String desc) {
+    private NoteDto buildNoteDto(String name, String desc, String email) {
         return NoteDto.builder()
             .name(name)
             .desc(desc)
+            .email(email)
             .build();
     }
 }

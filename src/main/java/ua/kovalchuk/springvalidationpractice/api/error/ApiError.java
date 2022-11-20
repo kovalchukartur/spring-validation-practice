@@ -6,13 +6,13 @@ import lombok.Getter;
 import org.springframework.validation.FieldError;
 
 @Getter
-class ApiError {
+public class ApiError {
 
     private final int status;
     private final String message;
     private final List<FieldError> fieldErrors = new ArrayList<>();
 
-    ApiError(int status, String message) {
+    public ApiError(int status, String message) {
         this.status = status;
         this.message = message;
     }

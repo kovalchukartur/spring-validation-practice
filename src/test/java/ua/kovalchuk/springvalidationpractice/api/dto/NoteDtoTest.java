@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import ua.kovalchuk.springvalidationpractice.NoteDtoBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -53,7 +54,7 @@ class NoteDtoTest {
     @MethodSource("provideStringsForIsBlank")
     void returnErrorWhenValidateNoteDto(String nameValue, String descValue, String email, String verifyEmail,
                                         String propertyPath, String expectedMessage) {
-        NoteDto noteDto = buildNoteDto(nameValue, descValue, email, verifyEmail);
+        NoteDto noteDto = NoteDtoBuilder.buildNoteDto(nameValue, descValue, email, verifyEmail);
         Set<ConstraintViolation<NoteDto>> constraintViolations = validator.validate(noteDto);
 
         assertNotNull(constraintViolations);
@@ -67,19 +68,10 @@ class NoteDtoTest {
     @Test
     void whenValidateNoteDtoIsSuccess() {
         String email = "Test@email.com";
-        NoteDto noteDto = buildNoteDto("name", "desc", email, email);
+        NoteDto noteDto = NoteDtoBuilder.buildNoteDto("name", "desc", email, email);
         Set<ConstraintViolation<NoteDto>> constraintViolations = validator.validate(noteDto);
 
         assertNotNull(constraintViolations);
         assertTrue(constraintViolations.isEmpty());
-    }
-
-    private NoteDto buildNoteDto(String name, String desc, String email, String verifyEmail) {
-        return NoteDto.builder()
-            .name(name)
-            .desc(desc)
-            .email(email)
-            .verifyEmail(verifyEmail)
-            .build();
     }
 }

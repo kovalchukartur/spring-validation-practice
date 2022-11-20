@@ -7,6 +7,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
+import ua.kovalchuk.springvalidationpractice.ContentUtil;
+import ua.kovalchuk.springvalidationpractice.NoteDtoBuilder;
+import ua.kovalchuk.springvalidationpractice.api.dto.NoteDto;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,10 +52,12 @@ class UserControllerTest {
 
     @Test
     void whenCreateUserNoteByIdIsSuccess() throws Exception {
+        NoteDto noteDto = NoteDtoBuilder.buildNoteDto("name", "desc", "email@gmail.com", "email@gmail.com");
+
         mockMvc.perform(
                 post("/users/1/note")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content("{\"name\": \"a\", \"desc\": \"a\"}")
+                    .content(ContentUtil.getContent(noteDto))
             )
             .andDo(print())
             .andExpect(status().isOk())
